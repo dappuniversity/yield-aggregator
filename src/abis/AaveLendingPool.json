@@ -1,106 +1,76 @@
 {
-  "contractName": "Aggregator",
+  "contractName": "AaveLendingPool",
   "abi": [
     {
-      "inputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "selectedExchange",
-          "type": "string"
-        }
-      ],
-      "name": "Deposit",
-      "type": "event"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "test",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "constant": false,
       "inputs": [
         {
           "internalType": "address",
-          "name": "_DAI",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_cDAI",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_AaveLendingPool",
+          "name": "asset",
           "type": "address"
         }
       ],
-      "name": "deposit",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_cDAI",
-          "type": "address"
-        }
-      ],
-      "name": "getCompoundExchangeRate",
+      "name": "getReserveData",
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "",
+          "name": "configuration",
           "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
+        },
+        {
+          "internalType": "uint128",
+          "name": "liquidityIndex",
+          "type": "uint128"
+        },
+        {
+          "internalType": "uint128",
+          "name": "variableBorrowIndex",
+          "type": "uint128"
+        },
+        {
+          "internalType": "uint128",
+          "name": "currentLiquidityRate",
+          "type": "uint128"
+        },
+        {
+          "internalType": "uint128",
+          "name": "currentVariableBorrowRate",
+          "type": "uint128"
+        },
+        {
+          "internalType": "uint128",
+          "name": "currentStableBorrowRate",
+          "type": "uint128"
+        },
+        {
+          "internalType": "uint40",
+          "name": "lastUpdateTimestamp",
+          "type": "uint40"
+        },
         {
           "internalType": "address",
-          "name": "_AaveLendingPool",
+          "name": "aTokenAddress",
           "type": "address"
         },
         {
           "internalType": "address",
-          "name": "_DAI",
+          "name": "stableDebtTokenAddress",
           "type": "address"
-        }
-      ],
-      "name": "getAaveExchangeRate",
-      "outputs": [
+        },
         {
-          "internalType": "uint128",
-          "name": "",
-          "type": "uint128"
+          "internalType": "address",
+          "name": "variableDebtTokenAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "interestRateStrategyAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "id",
+          "type": "uint8"
         }
       ],
       "payable": false,
@@ -108,11 +78,11 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"selectedExchange\",\"type\":\"string\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_DAI\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_cDAI\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_AaveLendingPool\",\"type\":\"address\"}],\"name\":\"deposit\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_AaveLendingPool\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_DAI\",\"type\":\"address\"}],\"name\":\"getAaveExchangeRate\",\"outputs\":[{\"internalType\":\"uint128\",\"name\":\"\",\"type\":\"uint128\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_cDAI\",\"type\":\"address\"}],\"name\":\"getCompoundExchangeRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"test\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/Justin Acevero/dev/Passion Projects/DAPP-University-Application-Project/dai-best-interest/src/contracts/Aggregator.sol\":\"Aggregator\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/Justin Acevero/dev/Passion Projects/DAPP-University-Application-Project/dai-best-interest/src/contracts/Aggregator.sol\":{\"keccak256\":\"0x1bc97ded98d6ebff5b23b0decbd0bc2c5078dbfe7a7575661998d4286e341156\",\"urls\":[\"bzz-raw://81a80d541a9f31c68ff2a2b7b47e9ed10cf05a827a51bf10cf77e67220a6389d\",\"dweb:/ipfs/QmZjBgcZaA5okWxWQEuSdjjz2jAkWvX8wddP5c7BXSPvjy\"]}},\"version\":1}",
-  "bytecode": "0x60806040526040518060400160405280601381526020017f436f6e747261637420536d6f6b652054657374000000000000000000000000008152506000908051906020019061004f929190610062565b5034801561005c57600080fd5b50610107565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106100a357805160ff19168380011785556100d1565b828001600101855582156100d1579182015b828111156100d05782518255916020019190600101906100b5565b5b5090506100de91906100e2565b5090565b61010491905b808211156101005760008160009055506001016100e8565b5090565b90565b61066d806101166000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80638d1cf7a3146100515780639f1acf44146100ed578063bd59bbd414610171578063f8a8fd6d146101c9575b600080fd5b6100b36004803603604081101561006757600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061024c565b60405180826fffffffffffffffffffffffffffffffff166fffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b61016f6004803603606081101561010357600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610396565b005b6101b36004803603602081101561018757600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291905050506104f9565b6040518082815260200191505060405180910390f35b6101d161059a565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156102115780820151818401526020810190506101f6565b50505050905090810190601f16801561023e5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60008083905060008173ffffffffffffffffffffffffffffffffffffffff166335ea6a75856040518263ffffffff1660e01b8152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505061018060405180830381600087803b1580156102d457600080fd5b505af11580156102e8573d6000803e3d6000fd5b505050506040513d6101808110156102ff57600080fd5b8101908080519060200190929190805190602001909291908051906020019092919080519060200190929190805190602001909291908051906020019092919080519060200190929190805190602001909291908051906020019092919080519060200190929190805190602001909291908051906020019092919050505050505050505050509350505050809250505092915050565b600083905060008390506000839050606060006103b2876104f9565b905060006103c0878a61024c565b6fffffffffffffffffffffffffffffffff16905080821115610419576040518060400160405280600881526020017f436f6d706f756e640000000000000000000000000000000000000000000000008152509250610452565b6040518060400160405280600481526020017f416176650000000000000000000000000000000000000000000000000000000081525092505b7f80dfa405646e0f90c813e8ee74f4f5f0a573809b1cb830e95cd1ebcbea04ccdc836040518080602001828103825283818151815260200191508051906020019080838360005b838110156104b4578082015181840152602081019050610499565b50505050905090810190601f1680156104e15780820380516001836020036101000a031916815260200191505b509250505060405180910390a1505050505050505050565b6000808290506000600a8273ffffffffffffffffffffffffffffffffffffffff1663bd6d894d6040518163ffffffff1660e01b8152600401602060405180830381600087803b15801561054b57600080fd5b505af115801561055f573d6000803e3d6000fd5b505050506040513d602081101561057557600080fd5b81019080805190602001909291905050508161058d57fe5b0490508092505050919050565b60008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156106305780601f1061060557610100808354040283529160200191610630565b820191906000526020600020905b81548152906001019060200180831161061357829003601f168201915b50505050508156fea265627a7a72315820b7a263d755388b653f8258ab214ce0f5cf8b185f90f82bb14e8cedb7d8e65a6564736f6c63430005100032",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c80638d1cf7a3146100515780639f1acf44146100ed578063bd59bbd414610171578063f8a8fd6d146101c9575b600080fd5b6100b36004803603604081101561006757600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061024c565b60405180826fffffffffffffffffffffffffffffffff166fffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b61016f6004803603606081101561010357600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610396565b005b6101b36004803603602081101561018757600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291905050506104f9565b6040518082815260200191505060405180910390f35b6101d161059a565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156102115780820151818401526020810190506101f6565b50505050905090810190601f16801561023e5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60008083905060008173ffffffffffffffffffffffffffffffffffffffff166335ea6a75856040518263ffffffff1660e01b8152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505061018060405180830381600087803b1580156102d457600080fd5b505af11580156102e8573d6000803e3d6000fd5b505050506040513d6101808110156102ff57600080fd5b8101908080519060200190929190805190602001909291908051906020019092919080519060200190929190805190602001909291908051906020019092919080519060200190929190805190602001909291908051906020019092919080519060200190929190805190602001909291908051906020019092919050505050505050505050509350505050809250505092915050565b600083905060008390506000839050606060006103b2876104f9565b905060006103c0878a61024c565b6fffffffffffffffffffffffffffffffff16905080821115610419576040518060400160405280600881526020017f436f6d706f756e640000000000000000000000000000000000000000000000008152509250610452565b6040518060400160405280600481526020017f416176650000000000000000000000000000000000000000000000000000000081525092505b7f80dfa405646e0f90c813e8ee74f4f5f0a573809b1cb830e95cd1ebcbea04ccdc836040518080602001828103825283818151815260200191508051906020019080838360005b838110156104b4578082015181840152602081019050610499565b50505050905090810190601f1680156104e15780820380516001836020036101000a031916815260200191505b509250505060405180910390a1505050505050505050565b6000808290506000600a8273ffffffffffffffffffffffffffffffffffffffff1663bd6d894d6040518163ffffffff1660e01b8152600401602060405180830381600087803b15801561054b57600080fd5b505af115801561055f573d6000803e3d6000fd5b505050506040513d602081101561057557600080fd5b81019080805190602001909291905050508161058d57fe5b0490508092505050919050565b60008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156106305780601f1061060557610100808354040283529160200191610630565b820191906000526020600020905b81548152906001019060200180831161061357829003601f168201915b50505050508156fea265627a7a72315820b7a263d755388b653f8258ab214ce0f5cf8b185f90f82bb14e8cedb7d8e65a6564736f6c63430005100032",
-  "sourceMap": "1075:1769:0:-;;;1120:42;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;1253:23;8:9:-1;5:2;;;30:1;27;20:12;5:2;1253:23:0;1075:1769;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;",
-  "deployedSourceMap": "1075:1769:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1075:1769:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2488:353;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;2488:353:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;1304:845;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;1304:845:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;2208:239;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;2208:239:0;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;1120:42;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:10;8:100;;;99:1;94:3;90:11;84:18;80:1;75:3;71:11;64:39;52:2;49:1;45:10;40:15;;8:100;;;12:14;1120:42:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2488:353;2591:7;2616:27;2662:16;2616:63;;2699:28;2747:11;:40;;;2788:4;2747:46;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;2747:46:0;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;2747:46:0;;;;;;;13:3:-1;8;5:12;2:2;;;30:1;27;20:12;2:2;2747:46:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2692:101;;;;;;;;;;;;;2813:20;2806:27;;;;2488:353;;;;:::o;1304:845::-;1463:7;1477:4;1463:19;;1493:9;1510:5;1493:23;;1527:27;1573:16;1527:63;;1603:30;1679:20;1702:30;1726:5;1702:23;:30::i;:::-;1679:53;;1743:16;1762:43;1782:16;1800:4;1762:19;:43::i;:::-;1743:62;;;;1872:8;1857:12;:23;1853:215;;;1935:29;;;;;;;;;;;;;;;;;;;1853:215;;;2031:25;;;;;;;;;;;;;;;;;;;1853:215;2116:25;2124:16;2116:25;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:10;8:100;;;99:1;94:3;90:11;84:18;80:1;75:3;71:11;64:39;52:2;49:1;45:10;40:15;;8:100;;;12:14;2116:25:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1304:845;;;;;;;;;:::o;2208:239::-;2272:7;2292:10;2310:5;2292:24;;2327:20;2381:2;2351:5;:25;;;:27;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;2351:27:0;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;2351:27:0;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;2351:27:0;;;;;;;;;;;;;;;;:32;;;;;;2327:57;;2427:12;2420:19;;;;2208:239;;;:::o;1120:42::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"asset\",\"type\":\"address\"}],\"name\":\"getReserveData\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"configuration\",\"type\":\"uint256\"},{\"internalType\":\"uint128\",\"name\":\"liquidityIndex\",\"type\":\"uint128\"},{\"internalType\":\"uint128\",\"name\":\"variableBorrowIndex\",\"type\":\"uint128\"},{\"internalType\":\"uint128\",\"name\":\"currentLiquidityRate\",\"type\":\"uint128\"},{\"internalType\":\"uint128\",\"name\":\"currentVariableBorrowRate\",\"type\":\"uint128\"},{\"internalType\":\"uint128\",\"name\":\"currentStableBorrowRate\",\"type\":\"uint128\"},{\"internalType\":\"uint40\",\"name\":\"lastUpdateTimestamp\",\"type\":\"uint40\"},{\"internalType\":\"address\",\"name\":\"aTokenAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"stableDebtTokenAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"variableDebtTokenAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"interestRateStrategyAddress\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"id\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/Justin Acevero/dev/Passion Projects/DAPP-University-Application-Project/dai-best-interest/src/contracts/Aggregator.sol\":\"AaveLendingPool\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/Justin Acevero/dev/Passion Projects/DAPP-University-Application-Project/dai-best-interest/src/contracts/Aggregator.sol\":{\"keccak256\":\"0x1bc97ded98d6ebff5b23b0decbd0bc2c5078dbfe7a7575661998d4286e341156\",\"urls\":[\"bzz-raw://81a80d541a9f31c68ff2a2b7b47e9ed10cf05a827a51bf10cf77e67220a6389d\",\"dweb:/ipfs/QmZjBgcZaA5okWxWQEuSdjjz2jAkWvX8wddP5c7BXSPvjy\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
   "source": "pragma solidity ^0.5.16;\r\n\r\n// Interface for ERC20 DAI contract\r\ninterface DAI {\r\n    function approve(address, uint256) external returns (bool);\r\n\r\n    function transfer(address, uint256) external returns (bool);\r\n}\r\n\r\n// Interface for Compound's cDAI contract\r\ninterface cDAI {\r\n    function mint(uint256) external returns (uint256);\r\n\r\n    function exchangeRateCurrent() external returns (uint256);\r\n}\r\n\r\n// Interface for Aave's lending pool contract\r\ninterface AaveLendingPool {\r\n    function getReserveData(address asset)\r\n        external\r\n        returns (\r\n            uint256 configuration,\r\n            uint128 liquidityIndex,\r\n            uint128 variableBorrowIndex,\r\n            uint128 currentLiquidityRate,\r\n            uint128 currentVariableBorrowRate,\r\n            uint128 currentStableBorrowRate,\r\n            uint40 lastUpdateTimestamp,\r\n            address aTokenAddress,\r\n            address stableDebtTokenAddress,\r\n            address variableDebtTokenAddress,\r\n            address interestRateStrategyAddress,\r\n            uint8 id\r\n        );\r\n}\r\n\r\ncontract Aggregator {\r\n    // Variables\r\n    string public test = \"Contract Smoke Test\";\r\n\r\n    // Events\r\n    event Deposit(string selectedExchange);\r\n\r\n    // Constructor\r\n    constructor() public {}\r\n\r\n    // Functions\r\n\r\n    function deposit(\r\n        address _DAI,\r\n        address _cDAI,\r\n        address _AaveLendingPool\r\n    ) public {\r\n        // Instiantiate contracts\r\n        DAI dai = DAI(_DAI);\r\n        cDAI cDai = cDAI(_cDAI);\r\n        AaveLendingPool lendingPool = AaveLendingPool(_AaveLendingPool);\r\n\r\n        string memory selectedExchange;\r\n\r\n        // Fetch interest rates\r\n        uint256 compoundRate = getCompoundExchangeRate(_cDAI);\r\n        uint256 aaveRate = getAaveExchangeRate(_AaveLendingPool, _DAI);\r\n\r\n        // Compare interest rates\r\n        if (compoundRate > aaveRate) {\r\n            // Deposit into Compound\r\n            selectedExchange = \"Compound\";\r\n        } else {\r\n            // Deposit into Aave\r\n            selectedExchange = \"Aave\";\r\n        }\r\n\r\n        // Emit Deposit event\r\n        emit Deposit(selectedExchange);\r\n    }\r\n\r\n    // ---\r\n\r\n    // Get Compound's interest rate\r\n    function getCompoundExchangeRate(address _cDAI) public returns (uint256) {\r\n        cDAI token = cDAI(_cDAI);\r\n        uint256 exchangeRate = (token.exchangeRateCurrent() / 10); // Fetch exchange rate\r\n\r\n        return exchangeRate;\r\n    }\r\n\r\n    // Get Aave's interest rate\r\n    function getAaveExchangeRate(address _AaveLendingPool, address _DAI)\r\n        public\r\n        returns (uint128)\r\n    {\r\n        AaveLendingPool lendingPool = AaveLendingPool(_AaveLendingPool);\r\n\r\n        (, , , uint128 currentLiquidityRate, , , , , , , , ) = lendingPool\r\n            .getReserveData(_DAI);\r\n\r\n        return currentLiquidityRate;\r\n    }\r\n}\r\n",
   "sourcePath": "C:/Users/Justin Acevero/dev/Passion Projects/DAPP-University-Application-Project/dai-best-interest/src/contracts/Aggregator.sol",
   "ast": {
@@ -4989,31 +4959,9 @@
     "name": "solc",
     "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
   },
-  "networks": {
-    "1": {
-      "events": {
-        "0x80dfa405646e0f90c813e8ee74f4f5f0a573809b1cb830e95cd1ebcbea04ccdc": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-              "internalType": "string",
-              "name": "selectedExchange",
-              "type": "string"
-            }
-          ],
-          "name": "Deposit",
-          "type": "event"
-        }
-      },
-      "links": {},
-      "address": "0xD48dd85C14FaaAA8cE1a9F27f42C5bB31D50Eb0C",
-      "transactionHash": "0x5513b2edd275758962d3049c486190b006d3c212eb3022a92cf2d746b11aaae4"
-    }
-  },
+  "networks": {},
   "schemaVersion": "3.2.3",
-  "updatedAt": "2021-09-19T14:54:03.289Z",
-  "networkType": "ethereum",
+  "updatedAt": "2021-09-19T14:53:56.816Z",
   "devdoc": {
     "methods": {}
   },
