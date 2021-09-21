@@ -127,5 +127,37 @@ contract('Aggregator', ([deployer]) => {
 
     })
 
+    describe('rebalance', async () => {
+
+        let amount = 10
+        let amountInWei = web3.utils.toWei(amount.toString(), 'ether')
+        let result
+
+        describe('success', async () => {
+            beforeEach(async () => {
+                // Approve
+                await daiContract.methods.approve(aggregator.address, amountInWei).send({ from: deployer })
+
+                // Initiate deposit
+                await aggregator.deposit(DAI, cDAI, aaveLendingPool, amountInWei, { from: deployer })
+            })
+
+            it('emits rebalance event', async () => {
+                result = await aggregator.rebalance(DAI, cDAI, aaveLendingPool, { from: deployer })
+                const log = result.logs[0]
+                log.event.should.equal('Rebalance')
+            })
+
+        })
+
+        describe('failure', async () => {
+
+            it('fails if user has no balance', async () => {
+                await aggregator.rebalance(DAI, cDAI, aaveLendingPool, { from: deployer }).should.be.rejectedWith(EVM_REVERT)
+            })
+
+        })
+
+    })
 
 })

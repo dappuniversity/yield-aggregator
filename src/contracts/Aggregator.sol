@@ -68,6 +68,7 @@ contract Aggregator {
     // Events
     event Deposit(address owner, uint256 amount, address depositTo);
     event Withdraw(address owner, uint256 amount, address withdrawFrom);
+    event Rebalance(address owner, uint256 amount, bool isTransferred);
 
     // Constructor
     constructor() public {}
@@ -136,6 +137,51 @@ contract Aggregator {
 
         // Reset user balance
         balances[msg.sender] = 0;
+    }
+
+    function rebalance(
+        address _DAI,
+        address _cDAI,
+        address _aaveLendingPool
+    ) public {
+        // Make sure funds are already deposited...
+        require(balances[msg.sender] > 0);
+
+        bool isTransferred = false;
+
+        // Fetch interest rates
+        uint256 compoundRate = getCompoundExchangeRate(_cDAI);
+        uint256 aaveRate = getAaveExchangeRate(_aaveLendingPool, _DAI);
+
+        // Compare interest rates
+        if ((compoundRate > aaveRate) && (locations[msg.sender] != _cDAI)) {
+            // If compoundRate is greater than aaveRate, and the current
+            // location of user funds is not in compound, then we transfer funds.
+
+            _withdrawFromAave(_DAI, _aaveLendingPool);
+
+            _depositToCompound(_DAI, _cDAI, balances[msg.sender]);
+
+            // Update location & transfer status
+            locations[msg.sender] = _cDAI;
+            isTransferred = true;
+        } else if (
+            (aaveRate > compoundRate) &&
+            (locations[msg.sender] != _aaveLendingPool)
+        ) {
+            // If aaveRate is greater than compoundRate, and the current
+            // location of user funds is not in aave, then we transfer funds.
+
+            _withdrawFromCompound(_cDAI);
+
+            _depositToAave(_DAI, _aaveLendingPool, balances[msg.sender]);
+
+            // Update location & transfer status
+            locations[msg.sender] = _aaveLendingPool;
+            isTransferred = true;
+        }
+
+        emit Rebalance(msg.sender, balances[msg.sender], isTransferred);
     }
 
     function _depositToCompound(
