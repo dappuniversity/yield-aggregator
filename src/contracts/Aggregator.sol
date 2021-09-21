@@ -62,8 +62,8 @@ contract Aggregator {
 
     // Variables
     string public test = "Contract Smoke Test";
-    mapping(address => uint256) balances; // Keep track of user balance
-    mapping(address => address) locations; // Keep track of where the user balance is stored
+    mapping(address => uint256) public balances; // Keep track of user balance
+    mapping(address => address) public locations; // Keep track of where the user balance is stored
 
     // Events
     event Deposit(address owner, uint256 amount, address depositTo);
@@ -253,11 +253,11 @@ contract Aggregator {
     }
 
     // ---
-    function balanceOf() public view returns (uint256) {
-        return balances[msg.sender];
+    function balanceOf(address _user) public view returns (uint256) {
+        return balances[_user];
     }
 
-    function balanceWhere() public view returns (address) {
-        return locations[msg.sender];
+    function balanceWhere(address _user) public view returns (address) {
+        return locations[_user];
     }
 }

@@ -64,13 +64,13 @@ contract('Aggregator', ([deployer]) => {
             it('tracks the dai amount', async () => {
                 // Check dai balance in smart contract
                 let balance
-                balance = await aggregator.balanceOf.call({ from: deployer })
+                balance = await aggregator.balanceOf.call(deployer)
                 console.log(balance.toString())
                 balance.toString().should.equal(amountInWei.toString())
             })
 
             it('tracks where dai is stored', async () => {
-                result = await aggregator.balanceWhere.call({ from: deployer })
+                result = await aggregator.balanceWhere.call(deployer)
                 console.log(result)
             })
 
