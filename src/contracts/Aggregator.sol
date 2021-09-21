@@ -33,11 +33,10 @@ interface AaveLendingPool {
         uint16 referralCode
     ) external;
 
-    function safeDeposit(
+    function withdraw(
         address asset,
         uint256 amount,
-        address onBehalfOf,
-        uint16 referralCode
+        address to
     ) external;
 
     function getReserveData(address asset)
@@ -78,7 +77,7 @@ contract Aggregator {
     function deposit(
         address _DAI,
         address _cDAI,
-        address _AaveLendingPool,
+        address _aaveLendingPool,
         uint256 _amount
     ) public {
         require(_amount > 0);
@@ -91,10 +90,10 @@ contract Aggregator {
 
         // Fetch interest rates
         uint256 compoundRate = getCompoundExchangeRate(_cDAI);
-        uint256 aaveRate = getAaveExchangeRate(_AaveLendingPool, _DAI);
+        uint256 aaveRate = getAaveExchangeRate(_aaveLendingPool, _DAI);
 
         // Compare interest rates
-        if (true) {
+        if (compoundRate > aaveRate) {
             // Deposit into Compound
             require(_depositToCompound(_DAI, _cDAI, _amount) == 0);
 
@@ -102,6 +101,10 @@ contract Aggregator {
             locations[msg.sender] = _cDAI;
         } else {
             // Deposit into Aave
+            _depositToAave(_DAI, _aaveLendingPool, _amount);
+
+            // Update location
+            locations[msg.sender] = _aaveLendingPool;
         }
 
         // Emit Deposit event
@@ -111,7 +114,7 @@ contract Aggregator {
     function withdraw(
         address _DAI,
         address _cDAI,
-        address _AaveLendingPool
+        address _aaveLendingPool
     ) public {
         require(balances[msg.sender] > 0);
 
@@ -123,6 +126,7 @@ contract Aggregator {
             require(_withdrawFromCompound(_cDAI) == 0);
         } else {
             // Withdraw from Aave
+            _withdrawFromAave(_DAI, _aaveLendingPool);
         }
 
         // Once we have the funds, transfer back to owner
@@ -157,6 +161,28 @@ contract Aggregator {
         return result;
     }
 
+    function _depositToAave(
+        address _DAI,
+        address _aaveLendingPool,
+        uint256 _amount
+    ) internal returns (uint256) {
+        // Instiantiate contracts
+        DAI dai = DAI(_DAI);
+        AaveLendingPool lendingPool = AaveLendingPool(_aaveLendingPool);
+
+        require(dai.approve(address(lendingPool), _amount));
+
+        lendingPool.deposit(_DAI, _amount, address(this), 0);
+    }
+
+    function _withdrawFromAave(address _DAI, address _aaveLendingPool)
+        internal
+    {
+        AaveLendingPool lendingPool = AaveLendingPool(_aaveLendingPool);
+
+        lendingPool.withdraw(_DAI, balances[msg.sender], address(this));
+    }
+
     // ---
 
     // Get Compound's interest rate
@@ -168,11 +194,11 @@ contract Aggregator {
     }
 
     // Get Aave's interest rate
-    function getAaveExchangeRate(address _AaveLendingPool, address _DAI)
+    function getAaveExchangeRate(address _aaveLendingPool, address _DAI)
         public
         returns (uint128)
     {
-        AaveLendingPool lendingPool = AaveLendingPool(_AaveLendingPool);
+        AaveLendingPool lendingPool = AaveLendingPool(_aaveLendingPool);
 
         (, , , uint128 currentLiquidityRate, , , , , , , , ) = lendingPool
             .getReserveData(_DAI);
