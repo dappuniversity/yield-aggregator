@@ -18,7 +18,7 @@ class App extends Component {
 			web3: null,
 			aggregator: null,
 			dai: null,
-			cDAI: "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643", // Address of Compound's cDAI
+			cDAI: "0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643", // Address of Compound's cDAI
 			aaveLendingPool: "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9", // Address of aaveLendingPool
 			account: "0x0",
 			walletBalance: "0",
@@ -31,6 +31,7 @@ class App extends Component {
 		// Binding methods here
 		this.depositHandler = this.depositHandler.bind(this)
 		this.withdrawHandler = this.withdrawHandler.bind(this)
+		this.rebalanceHandler = this.rebalanceHandler.bind(this)
 
 	}
 
@@ -92,17 +93,15 @@ class App extends Component {
 		this.setState({ walletBalance })
 		this.setState({ aggregatorBalance })
 
-		if (activeProtocol === this.state.cDAI) {
-			this.setState({ activeProtocol: "Compound" })
-		} else if (activeProtocol === this.state.aaveLendingPool) {
-			this.setState({ activeProtocol: "Aave" })
+		if (aggregatorBalance !== "0") {
+			activeProtocol === this.state.cDAI ? this.setState({ activeProtocol: "Compound" }) : this.setState({ activeProtocol: "Aave" })
 		} else {
 			this.setState({ activeProtocol: "None" })
 		}
 	}
 
 	async depositHandler() {
-		if (this.state.walletBalance == 0) {
+		if (this.state.walletBalance === "0") {
 			window.alert('No funds in wallet')
 			return
 		}
@@ -128,8 +127,37 @@ class App extends Component {
 			})
 	}
 
+	async rebalanceHandler() {
+		if (this.state.aggregatorBalance === "0") {
+			window.alert('No funds in contract')
+			return
+		}
+
+		let compoundRate = await this.state.aggregator.methods.getCompoundExchangeRate(this.state.cDAI).call()
+		let aaveRate = await this.state.aggregator.methods.getAaveExchangeRate(this.state.aaveLendingPool, this.state.dai._address).call()
+
+		if ((compoundRate > aaveRate) && (this.state.activeProtocol === "Compound")) {
+			window.alert('Funds are already in the higher protocol')
+			return
+		}
+
+		if ((aaveRate > compoundRate) && (this.state.activeProtocol === "Aave")) {
+			window.alert('Funds are already in the higher protocol')
+			return
+		}
+
+		this.state.aggregator.methods.rebalance(
+			this.state.dai._address,
+			this.state.cDAI,
+			this.state.aaveLendingPool
+		).send({ from: this.state.account })
+			.on('transactionHash', () => {
+				this.loadAccountInfo()
+			})
+	}
+
 	async withdrawHandler() {
-		if (this.state.aggregatorBalance == 0) {
+		if (this.state.aggregatorBalance === "0") {
 			window.alert('No funds in contract')
 			return
 		}
@@ -173,7 +201,7 @@ class App extends Component {
 									<button type="submit">Deposit</button>
 								</form>
 
-								<button>Rebalance</button>
+								<button onClick={this.rebalanceHandler}>Rebalance</button>
 
 								<button onClick={this.withdrawHandler}>Withdraw</button>
 
