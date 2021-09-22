@@ -29,7 +29,8 @@ class App extends Component {
 		};
 
 		// Binding methods here
-		this.depositHandler = this.depositHandler.bind(this);
+		this.depositHandler = this.depositHandler.bind(this)
+		this.withdrawHandler = this.withdrawHandler.bind(this)
 
 	}
 
@@ -127,6 +128,22 @@ class App extends Component {
 			})
 	}
 
+	async withdrawHandler() {
+		if (this.state.aggregatorBalance == 0) {
+			window.alert('No funds in contract')
+			return
+		}
+
+		this.state.aggregator.methods.withdraw(
+			this.state.dai._address,
+			this.state.cDAI,
+			this.state.aaveLendingPool
+		).send({ from: this.state.account })
+			.on('transactionHash', () => {
+				this.loadAccountInfo()
+			})
+	}
+
 	render() {
 		return (
 			<div>
@@ -147,6 +164,7 @@ class App extends Component {
 						</div>
 						<div className="row content">
 							<div className="col user-controls">
+
 								<form onSubmit={(e) => {
 									e.preventDefault()
 									this.depositHandler()
@@ -154,8 +172,11 @@ class App extends Component {
 									<input type="number" placeholder="Amount" onChange={(e) => this.setState({ amountToDeposit: e.target.value })} />
 									<button type="submit">Deposit</button>
 								</form>
+
 								<button>Rebalance</button>
-								<button>Withdraw</button>
+
+								<button onClick={this.withdrawHandler}>Withdraw</button>
+
 							</div>
 							<div className="col user-stats">
 								<p>Current Wallet Balance (DAI): {this.state.walletBalance}</p>
