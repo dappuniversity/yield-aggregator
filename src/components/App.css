@@ -37,8 +37,14 @@ main {
     padding: 4em;
 }
 
+form {
+    margin: 2em;
+}
+
 button {
-    margin: .5em;
+    min-width: 150px;
+
+    margin: .5em auto;
     padding: 1em 2em;
 
     background: var(--clr-dark);
@@ -50,6 +56,11 @@ button {
     font-weight: 700 !important;
 
     transition: all 250ms ease;
+}
+
+input[type="number"] {
+    margin: .5em auto;
+    padding: 1em 2em;
 }
 
 button:hover {
