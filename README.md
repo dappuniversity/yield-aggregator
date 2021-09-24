@@ -77,3 +77,7 @@ Error: while migrating Migrations: Returned error: project ID does not have acce
 ```
 
 This error may come up while trying to run `$ truffle test`, to solve this issue, simply restart your ganache-cli. This will mean having to re-mint your account with DAI
+
+## Project Showcase
+
+Click [here](https://youtu.be/ML9iIi8TiG8).
