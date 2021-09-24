@@ -108,6 +108,11 @@ class App extends Component {
 			return
 		}
 
+		if (this.state.amountToDeposit > this.state.walletBalance) {
+			window.alert('Insufficient funds')
+			return
+		}
+
 		if (this.state.amountToDeposit <= 0) {
 			window.alert('Cannot be 0 or negative')
 			return
