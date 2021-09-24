@@ -85,7 +85,6 @@ class App extends Component {
 
 		let walletBalance = await this.state.dai.methods.balanceOf(this.state.account).call()
 		let aggregatorBalance = await this.state.aggregator.methods.balanceOf(this.state.account).call()
-		let activeProtocol = await this.state.aggregator.methods.balanceWhere(this.state.account).call()
 
 		walletBalance = this.state.web3.utils.fromWei(walletBalance, 'ether')
 		aggregatorBalance = this.state.web3.utils.fromWei(aggregatorBalance, 'ether')
@@ -94,7 +93,10 @@ class App extends Component {
 		this.setState({ aggregatorBalance })
 
 		if (aggregatorBalance !== "0") {
+
+			let activeProtocol = await this.state.aggregator.methods.balanceWhere(this.state.account).call()
 			activeProtocol === this.state.cDAI ? this.setState({ activeProtocol: "Compound" }) : this.setState({ activeProtocol: "Aave" })
+
 		} else {
 			this.setState({ activeProtocol: "None" })
 		}
@@ -133,8 +135,8 @@ class App extends Component {
 			return
 		}
 
-		let compoundRate = await this.state.aggregator.methods.getCompoundExchangeRate(this.state.cDAI).call()
-		let aaveRate = await this.state.aggregator.methods.getAaveExchangeRate(this.state.aaveLendingPool, this.state.dai._address).call()
+		let compoundRate = await this.state.aggregator.methods.getCompoundInterestRate(this.state.cDAI).call()
+		let aaveRate = await this.state.aggregator.methods.getAaveInterestRate(this.state.aaveLendingPool, this.state.dai._address).call()
 
 		if ((compoundRate > aaveRate) && (this.state.activeProtocol === "Compound")) {
 			window.alert('Funds are already in the higher protocol')

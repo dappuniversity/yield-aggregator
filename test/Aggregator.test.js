@@ -13,7 +13,6 @@ const aaveLendingPool = '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9' // Aave's L
 const EVM_REVERT = 'VM Exception while processing transaction: revert'
 
 contract('Aggregator', ([deployer]) => {
-    const test = "Contract Smoke Test"
 
     const daiContract = new web3.eth.Contract(daiABI, DAI);
     let aggregator
@@ -26,21 +25,21 @@ contract('Aggregator', ([deployer]) => {
     describe('deployment', () => {
 
         it('passes the smoke test', async () => {
-            const result = await aggregator.test()
-            result.should.equal(test)
+            const result = await aggregator.name()
+            result.should.equal("Yield Aggregator")
         })
     })
 
     describe('exchange rates', async () => {
 
         it('fetches compound exchange rate', async () => {
-            const result = await aggregator.getCompoundExchangeRate.call(cDAI)
+            const result = await aggregator.getCompoundInterestRate.call(cDAI)
             console.log(result.toString())
             result.should.not.equal(0)
         })
 
         it('fetches aave exchange rate', async () => {
-            const result = await aggregator.getAaveExchangeRate.call(aaveLendingPool, DAI)
+            const result = await aggregator.getAaveInterestRate.call(aaveLendingPool, DAI)
             console.log(result.toString())
             result.should.not.equal(0)
         })
@@ -65,7 +64,6 @@ contract('Aggregator', ([deployer]) => {
                 // Check dai balance in smart contract
                 let balance
                 balance = await aggregator.balanceOf.call(deployer)
-                console.log(balance.toString())
                 balance.toString().should.equal(amountInWei.toString())
             })
 
@@ -115,6 +113,12 @@ contract('Aggregator', ([deployer]) => {
                 log.event.should.equal('Withdraw')
             })
 
+            it('updates the user contract balance', async () => {
+                await aggregator.withdraw(DAI, cDAI, aaveLendingPool, { from: deployer })
+                result = await aggregator.balanceOf.call(deployer)
+                result.toString().should.equal("0")
+            })
+
         })
 
         describe('failure', async () => {
@@ -128,27 +132,6 @@ contract('Aggregator', ([deployer]) => {
     })
 
     describe('rebalance', async () => {
-
-        let amount = 10
-        let amountInWei = web3.utils.toWei(amount.toString(), 'ether')
-        let result
-
-        describe('success', async () => {
-            beforeEach(async () => {
-                // Approve
-                await daiContract.methods.approve(aggregator.address, amountInWei).send({ from: deployer })
-
-                // Initiate deposit
-                await aggregator.deposit(DAI, cDAI, aaveLendingPool, amountInWei, { from: deployer })
-            })
-
-            it('emits rebalance event', async () => {
-                result = await aggregator.rebalance(DAI, cDAI, aaveLendingPool, { from: deployer })
-                const log = result.logs[0]
-                log.event.should.equal('Rebalance')
-            })
-
-        })
 
         describe('failure', async () => {
 

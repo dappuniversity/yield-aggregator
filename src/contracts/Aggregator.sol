@@ -61,14 +61,14 @@ contract Aggregator {
     using SafeMath for uint256;
 
     // Variables
-    string public test = "Contract Smoke Test";
+    string public name = "Yield Aggregator";
     mapping(address => uint256) public balances; // Keep track of user balance
     mapping(address => address) public locations; // Keep track of where the user balance is stored
 
     // Events
     event Deposit(address owner, uint256 amount, address depositTo);
     event Withdraw(address owner, uint256 amount, address withdrawFrom);
-    event Rebalance(address owner, uint256 amount, bool isTransferred);
+    event Rebalance(address owner, uint256 amount, address depositTo);
 
     // Constructor
     constructor() public {}
@@ -83,15 +83,21 @@ contract Aggregator {
     ) public {
         require(_amount > 0);
 
-        // Instiantiate contracts
+        // Rebalance in the case of a protocol with the higher rate after their initial deposit,
+        // is no longer the higher interest rate during this deposit...
+        if (balances[msg.sender] > 0) {
+            rebalance(_DAI, _cDAI, _aaveLendingPool);
+        }
+
+        // Instiantiate DAI contract
         DAI dai = DAI(_DAI);
 
         dai.transferFrom(msg.sender, address(this), _amount);
         balances[msg.sender] = balances[msg.sender].add(_amount);
 
         // Fetch interest rates
-        uint256 compoundRate = getCompoundExchangeRate(_cDAI);
-        uint256 aaveRate = getAaveExchangeRate(_aaveLendingPool, _DAI);
+        uint256 compoundRate = getCompoundInterestRate(_cDAI);
+        uint256 aaveRate = getAaveInterestRate(_aaveLendingPool, _DAI);
 
         // Compare interest rates
         if (compoundRate > aaveRate) {
@@ -147,11 +153,9 @@ contract Aggregator {
         // Make sure funds are already deposited...
         require(balances[msg.sender] > 0);
 
-        bool isTransferred = false;
-
         // Fetch interest rates
-        uint256 compoundRate = getCompoundExchangeRate(_cDAI);
-        uint256 aaveRate = getAaveExchangeRate(_aaveLendingPool, _DAI);
+        uint256 compoundRate = getCompoundInterestRate(_cDAI);
+        uint256 aaveRate = getAaveInterestRate(_aaveLendingPool, _DAI);
 
         // Compare interest rates
         if ((compoundRate > aaveRate) && (locations[msg.sender] != _cDAI)) {
@@ -162,9 +166,14 @@ contract Aggregator {
 
             _depositToCompound(_DAI, _cDAI, balances[msg.sender]);
 
-            // Update location & transfer status
+            // Update location
             locations[msg.sender] = _cDAI;
-            isTransferred = true;
+
+            emit Rebalance(
+                msg.sender,
+                balances[msg.sender],
+                locations[msg.sender]
+            );
         } else if (
             (aaveRate > compoundRate) &&
             (locations[msg.sender] != _aaveLendingPool)
@@ -176,12 +185,15 @@ contract Aggregator {
 
             _depositToAave(_DAI, _aaveLendingPool, balances[msg.sender]);
 
-            // Update location & transfer status
+            // Update location
             locations[msg.sender] = _aaveLendingPool;
-            isTransferred = true;
-        }
 
-        emit Rebalance(msg.sender, balances[msg.sender], isTransferred);
+            emit Rebalance(
+                msg.sender,
+                balances[msg.sender],
+                locations[msg.sender]
+            );
+        }
     }
 
     function _depositToCompound(
@@ -232,7 +244,7 @@ contract Aggregator {
     // ---
 
     // Get Compound's interest rate
-    function getCompoundExchangeRate(address _cDAI) public returns (uint256) {
+    function getCompoundInterestRate(address _cDAI) public returns (uint256) {
         cDAI token = cDAI(_cDAI);
         uint256 exchangeRate = (token.exchangeRateCurrent() / 10); // Fetch exchange rate
 
@@ -240,7 +252,7 @@ contract Aggregator {
     }
 
     // Get Aave's interest rate
-    function getAaveExchangeRate(address _aaveLendingPool, address _DAI)
+    function getAaveInterestRate(address _aaveLendingPool, address _DAI)
         public
         returns (uint128)
     {
@@ -252,7 +264,6 @@ contract Aggregator {
         return currentLiquidityRate;
     }
 
-    // ---
     function balanceOf(address _user) public view returns (uint256) {
         return balances[_user];
     }
