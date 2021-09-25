@@ -21,7 +21,7 @@ interface cDAI {
 
     function redeemUnderlying(uint256) external returns (uint256);
 
-    function exchangeRateCurrent() external returns (uint256);
+    function supplyRatePerBlock() external returns (uint256);
 }
 
 // Interface for Aave's lending pool contract
@@ -245,10 +245,23 @@ contract Aggregator {
 
     // Get Compound's interest rate
     function getCompoundInterestRate(address _cDAI) public returns (uint256) {
-        cDAI token = cDAI(_cDAI);
-        uint256 exchangeRate = (token.exchangeRateCurrent() / 10); // Fetch exchange rate
+        cDAI cDai = cDAI(_cDAI);
 
-        return exchangeRate;
+        uint256 supplyRate = cDai.supplyRatePerBlock(); // Fetch supply rate
+        uint256 mantissa = 1 * 10**18;
+
+        uint256 daysPerYear = 365;
+        daysPerYear = daysPerYear.mul(mantissa);
+
+        uint256 blocksPerDay = 6570; // (13.15 seconds per block)
+        blocksPerDay = blocksPerDay.mul(mantissa);
+
+        uint256 apy = supplyRate.mul(blocksPerDay);
+        apy = apy.add(mantissa);
+        apy = apy.sub(daysPerYear);
+        apy = apy.mul(36500);
+
+        return apy / 10**11;
     }
 
     // Get Aave's interest rate
