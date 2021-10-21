@@ -16,7 +16,7 @@ web3.eth.getAccounts().then((ganacheAccounts) => {
     accounts = ganacheAccounts;
     daiContract = new web3.eth.Contract(daiAbi, daiMainNetAddress);
 
-    // 50 DAI
+    // 1000 DAI
     const numbDaiToMint = web3.utils.toWei('1000', 'ether');
 
     return daiContract.methods.mint(accounts[0], numbDaiToMint)

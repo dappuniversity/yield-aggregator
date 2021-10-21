@@ -14,7 +14,7 @@ const aaveLendingPool = '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9' // Aave's L
 
 const EVM_REVERT = 'VM Exception while processing transaction: revert'
 
-contract('Aggregator', ([deployer, anotherUser]) => {
+contract('Aggregator', ([deployer, user2]) => {
 
     const daiContract = new web3.eth.Contract(daiABI, DAI)
     const cDAI_contract = new web3.eth.Contract(cDAI_ABI, cDAI)
@@ -81,7 +81,7 @@ contract('Aggregator', ([deployer, anotherUser]) => {
             })
 
             it('tracks where dai is stored', async () => {
-                result = await aggregator.balanceWhere.call(deployer)
+                result = await aggregator.balanceWhere.call()
                 console.log(result)
             })
 
@@ -145,6 +145,10 @@ contract('Aggregator', ([deployer, anotherUser]) => {
 
             it('fails if user has no balance', async () => {
                 await aggregator.withdraw({ from: deployer }).should.be.rejectedWith(EVM_REVERT)
+            })
+
+            it('fails if a different user attempts to withdraw', async () => {
+                await aggregator.withdraw({ from: user2 }).should.be.rejectedWith(EVM_REVERT)
             })
 
         })

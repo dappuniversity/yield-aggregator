@@ -20,6 +20,7 @@ any time.
 - Install [NodeJS](https://nodejs.org/en/), I recommend using node version 10.16.3 to avoid any potential dependency issues
 - Create or log in to your [Infura.io](https://infura.io/login) account and create a new project, and save your project ID located in your project settings, you'll need this when starting the ganache-cli server.
 - Install [MetaMask](https://metamask.io/) in your browser.
+- Install [Ganache-cli](https://github.com/trufflesuite/ganache). To see if you have ganache-cli installed, in your command line type `ganache-cli --version`. To install, in your command line type `npm install ganache-cli --global`
 
 ## Setting Up
 ### 1. Clone the Repository:
@@ -77,7 +78,3 @@ Error: while migrating Migrations: Returned error: project ID does not have acce
 ```
 
 This error may come up while trying to run `$ truffle test`, to solve this issue, simply restart your ganache-cli. This will mean having to re-mint your account with DAI
-
-## Project Showcase
-
-Click [here](https://youtu.be/ML9iIi8TiG8).

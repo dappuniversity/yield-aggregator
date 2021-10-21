@@ -107,7 +107,7 @@ class App extends Component {
 
 		if (aggregatorBalance !== "0") {
 
-			let activeProtocol = await this.state.aggregator.methods.balanceWhere(this.state.account).call()
+			let activeProtocol = await this.state.aggregator.methods.balanceWhere().call()
 			activeProtocol === this.state.cDAI_address ? this.setState({ activeProtocol: "Compound" }) : this.setState({ activeProtocol: "Aave" })
 
 		} else {

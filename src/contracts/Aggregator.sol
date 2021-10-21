@@ -227,7 +227,7 @@ contract Aggregator {
         }
     }
 
-    function balanceWhere(address _user) public view returns (address) {
+    function balanceWhere() public view returns (address) {
         return locationOfFunds;
     }
 }
