@@ -6,6 +6,9 @@ import './App.css';
 
 import Aggregator from '../abis/Aggregator.json'
 import DAI_ABI from '../helpers/dai-abi.json'
+import cDAI_ABI from '../helpers/cDai-abi.json'
+import AAVE_ABI from '../helpers/aaveLendingPool-abi.json'
+import { getCompoundAPY, getAaveAPY } from '../helpers/calculateAPY'
 
 // Import components
 import NavBar from './Navbar'
@@ -17,9 +20,12 @@ class App extends Component {
 		this.state = {
 			web3: null,
 			aggregator: null,
-			dai: null,
-			cDAI: "0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643", // Address of Compound's cDAI
-			aaveLendingPool: "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9", // Address of aaveLendingPool
+			dai_contract: null,
+			dai_address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+			cDAI_contract: null,
+			cDAI_address: "0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643", // Address of Compound's cDAI
+			aaveLendingPool_contract: null,
+			aaveLendingPool_address: "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9", // Address of aaveLendingPool
 			account: "0x0",
 			walletBalance: "0",
 			aggregatorBalance: "0",
@@ -72,10 +78,17 @@ class App extends Component {
 
 		this.setState({ aggregator })
 
-		const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
-		const dai = new web3.eth.Contract(DAI_ABI, DAI_ADDRESS)
+		const dai = new web3.eth.Contract(DAI_ABI, this.state.dai_address)
 
 		this.setState({ dai })
+
+		const cDAI_contract = new web3.eth.Contract(cDAI_ABI, this.state.cDAI_address);
+
+		this.setState({ cDAI_contract })
+
+		const aaveLendingPool_contract = new web3.eth.Contract(AAVE_ABI, this.state.aaveLendingPool_address);
+
+		this.setState({ aaveLendingPool_contract })
 
 		await this.loadAccountInfo()
 
@@ -84,7 +97,7 @@ class App extends Component {
 	async loadAccountInfo() {
 
 		let walletBalance = await this.state.dai.methods.balanceOf(this.state.account).call()
-		let aggregatorBalance = await this.state.aggregator.methods.balanceOf(this.state.account).call()
+		let aggregatorBalance = await this.state.aggregator.methods.amountDeposited().call()
 
 		walletBalance = this.state.web3.utils.fromWei(walletBalance, 'ether')
 		aggregatorBalance = this.state.web3.utils.fromWei(aggregatorBalance, 'ether')
@@ -95,7 +108,7 @@ class App extends Component {
 		if (aggregatorBalance !== "0") {
 
 			let activeProtocol = await this.state.aggregator.methods.balanceWhere(this.state.account).call()
-			activeProtocol === this.state.cDAI ? this.setState({ activeProtocol: "Compound" }) : this.setState({ activeProtocol: "Aave" })
+			activeProtocol === this.state.cDAI_address ? this.setState({ activeProtocol: "Compound" }) : this.setState({ activeProtocol: "Aave" })
 
 		} else {
 			this.setState({ activeProtocol: "None" })
@@ -119,14 +132,13 @@ class App extends Component {
 		}
 
 		const amount = this.state.web3.utils.toWei(this.state.amountToDeposit.toString(), 'ether')
+		const compAPY = await getCompoundAPY(this.state.cDAI_contract)
+		const aaveAPY = await getAaveAPY(this.state.aaveLendingPool_contract)
 
 		this.state.dai.methods.approve(this.state.aggregator._address, amount).send({ from: this.state.account })
 			.on('transactionHash', () => {
 				this.state.aggregator.methods.deposit(
-					this.state.dai._address,
-					this.state.cDAI,
-					this.state.aaveLendingPool,
-					amount
+					amount, compAPY, aaveAPY
 				).send({ from: this.state.account })
 					.on('transactionHash', () => {
 						this.loadAccountInfo()
@@ -140,23 +152,22 @@ class App extends Component {
 			return
 		}
 
-		let compoundRate = await this.state.aggregator.methods.getCompoundInterestRate(this.state.cDAI).call()
-		let aaveRate = await this.state.aggregator.methods.getAaveInterestRate(this.state.aaveLendingPool, this.state.dai._address).call()
+		const compAPY = await getCompoundAPY(this.state.cDAI_contract)
+		const aaveAPY = await getAaveAPY(this.state.aaveLendingPool_contract)
 
-		if ((compoundRate > aaveRate) && (this.state.activeProtocol === "Compound")) {
+		if ((compAPY > aaveAPY) && (this.state.activeProtocol === "Compound")) {
 			window.alert('Funds are already in the higher protocol')
 			return
 		}
 
-		if ((aaveRate > compoundRate) && (this.state.activeProtocol === "Aave")) {
+		if ((aaveAPY > compAPY) && (this.state.activeProtocol === "Aave")) {
 			window.alert('Funds are already in the higher protocol')
 			return
 		}
 
 		this.state.aggregator.methods.rebalance(
-			this.state.dai._address,
-			this.state.cDAI,
-			this.state.aaveLendingPool
+			compAPY,
+			aaveAPY
 		).send({ from: this.state.account })
 			.on('transactionHash', () => {
 				this.loadAccountInfo()
@@ -170,9 +181,6 @@ class App extends Component {
 		}
 
 		this.state.aggregator.methods.withdraw(
-			this.state.dai._address,
-			this.state.cDAI,
-			this.state.aaveLendingPool
 		).send({ from: this.state.account })
 			.on('transactionHash', () => {
 				this.loadAccountInfo()
@@ -215,7 +223,7 @@ class App extends Component {
 							</div>
 							<div className="col user-stats">
 								<p>Current Wallet Balance (DAI): {this.state.walletBalance}</p>
-								<p>Aggregator Balance (DAI): {this.state.aggregatorBalance}</p>
+								<p>Amount Deposited to Aggregator (DAI): {this.state.aggregatorBalance}</p>
 								<p>Active Protocol: {this.state.activeProtocol}</p>
 							</div>
 						</div>
