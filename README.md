@@ -51,7 +51,7 @@ I recommend saving that mnemonic phrase to use it when you need to start (or res
 `$ truffle migrate --reset`
 
 ### 5. Mint DAI
-`$ node .\mint-dai\dai.js`
+`$ node ./mint-dai/dai.js`
 
 ### 6. Run Frontend Application
 In a separate CMD prompt/terminal run:
